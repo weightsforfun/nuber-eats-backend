@@ -1,0 +1,37 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Resturant {
+  id: Float!
+  name: String!
+  isVegan: Boolean
+  address: String!
+  ownerName: String!
+  categoryName: String!
+}
+
+type Query {
+  resturants(veganOnly: Boolean!): [Resturant!]!
+}
+
+type Mutation {
+  createResturant(input: CreateResturantDto!): Boolean!
+  updateResturant(id: Float!, data: UpdateResturantInput!): Boolean!
+}
+
+input CreateResturantDto {
+  name: String!
+  isVegan: Boolean
+  address: String!
+  ownerName: String = "과천"
+  categoryName: String!
+}
+
+input UpdateResturantInput {
+  name: String
+  isVegan: Boolean
+  address: String
+  ownerName: String = "과천"
+  categoryName: String
+}
