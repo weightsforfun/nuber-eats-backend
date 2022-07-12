@@ -7,6 +7,9 @@ import { ResturantModule } from "./resturant/resturant.module";
 import * as Joi from "joi";
 import { join } from "path";
 import { Resturant } from "./resturant/entities/resturant.entity";
+import { UsersModule } from "./users/users.module";
+import { CommonModule } from "./common/common.module";
+import { UserAccount } from "./users/entities/user.entity";
 
 @Module({
   imports: [
@@ -27,7 +30,6 @@ import { Resturant } from "./resturant/entities/resturant.entity";
       autoSchemaFile: join(process.cwd(), "src/schema.gql"),
       driver: ApolloDriver,
     }),
-    ResturantModule,
     TypeOrmModule.forRoot({
       type: "postgres",
       host: process.env.DB_HOST,
@@ -37,8 +39,10 @@ import { Resturant } from "./resturant/entities/resturant.entity";
       database: process.env.DB_NAME,
       synchronize: true,
       logging: true,
-      entities: [Resturant],
+      entities: [UserAccount],
     }),
+    UsersModule,
+    CommonModule,
   ],
   controllers: [],
   providers: [],
