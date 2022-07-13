@@ -11,7 +11,7 @@ import {
 export class Core {
   @PrimaryGeneratedColumn()
   @Field((type) => Number)
-  id: Number;
+  id: number;
 
   @CreateDateColumn()
   @Field((type) => Date)
