@@ -42,8 +42,8 @@ export class UserService {
         const isPasswordCorrect = await targetUser.checkPassword(password);
         if (isPasswordCorrect) {
           const token = this.jwt.sign(targetUser.id);
-
-          return { ok: true };
+          console.log(token);
+          return { ok: true, token: token };
         }
         return { ok: false, error: "password is not correct" };
       }
@@ -53,5 +53,8 @@ export class UserService {
         error,
       };
     }
+  }
+  async findById(id: number): Promise<User> {
+    return await this.users.findOne({ where: { id } });
   }
 }
