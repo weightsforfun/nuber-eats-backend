@@ -7,6 +7,7 @@ import { User } from "./entities/user.entity";
 import * as jwt from "jsonwebtoken";
 import { ConfigService } from "@nestjs/config";
 import { JwtService } from "src/jwt/jwt.service";
+import { EditProfileInput } from "./dtos/edit-profile.dto";
 @Injectable()
 export class UserService {
   constructor(
@@ -56,5 +57,15 @@ export class UserService {
   }
   async findById(id: number): Promise<User> {
     return await this.users.findOne({ where: { id } });
+  }
+  async editProfile(userId: number, { email, password }: EditProfileInput) {
+    const user = await this.findById(userId);
+    if (email) {
+      user.email = email;
+    }
+    if (password) {
+      user.password = password;
+    }
+    return this.users.save(user);
   }
 }
