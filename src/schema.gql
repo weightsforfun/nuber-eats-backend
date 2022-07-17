@@ -9,6 +9,7 @@ type User {
   email: String!
   password: String!
   role: UserRole!
+  verified: Boolean!
 }
 
 """
@@ -44,15 +45,21 @@ type UserProfileOutput {
   user: User
 }
 
+type VerificationOutput {
+  error: String
+  ok: Boolean!
+}
+
 type Query {
   me: User!
   profile(userId: Float!): UserProfileOutput!
 }
 
 type Mutation {
-  createUser(input: CreateUserInput!): CreateUserOutput!
+  createAccount(input: CreateUserInput!): CreateUserOutput!
   login(input: LoginInput!): LoginOutput!
   editProfile(input: EditProfileInput!): EditProfileOutPut!
+  verifyEmail(input: VerificationInput!): VerificationOutput!
 }
 
 input CreateUserInput {
@@ -69,4 +76,8 @@ input LoginInput {
 input EditProfileInput {
   email: String
   password: String
+}
+
+input VerificationInput {
+  code: String!
 }
