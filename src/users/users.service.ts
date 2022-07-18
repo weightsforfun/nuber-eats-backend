@@ -18,7 +18,7 @@ export class UserService {
     @InjectRepository(Verification)
     private readonly verifications: Repository<Verification>,
     private readonly jwt: JwtService,
-    private readonly emailService: MailService
+    private readonly mailService: MailService
   ) {}
   async createAccount({
     email,
@@ -27,6 +27,7 @@ export class UserService {
   }: CreateUserInput): Promise<{ ok: boolean; error?: string }> {
     try {
       const exist = await this.users.findOne({ where: { email } });
+      console.log(exist);
       if (exist) {
         return { ok: false, error: "this email is already used" };
       }
@@ -36,11 +37,7 @@ export class UserService {
       const verification = await this.verifications.save(
         this.verifications.create({ user })
       );
-      this.emailService.sendVerificationEmail(
-        user.email,
-        verification.code,
-        user.id.toString()
-      );
+      this.mailService.sendVerificationEmail(user.email, verification.code);
       return { ok: true };
     } catch (e) {
       return { ok: false, error: "there is error try again" };
@@ -70,13 +67,24 @@ export class UserService {
     } catch (error) {
       return {
         ok: false,
-        error,
+        error: "Can't log user in.",
       };
     }
   }
 
-  async findById(id: number): Promise<User> {
-    return await this.users.findOne({ where: { id } });
+  async findById(id: number): Promise<UserProfileOutput> {
+    try {
+      const user = await this.users.findOneOrFail({ where: { id } });
+      return {
+        ok: true,
+        user,
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        error: "User Not Found",
+      };
+    }
   }
 
   async profile(
@@ -90,7 +98,7 @@ export class UserService {
       }
       return {
         ok: true,
-        user: user,
+        user: user.user,
       };
     } catch (error) {
       return {
@@ -112,7 +120,13 @@ export class UserService {
 
         const verify = await this.verifications.findOne({ where: { userId } });
         verify.code = verify.changeCode();
-        await this.verifications.save(verify);
+
+        const updatedVerification = await this.verifications.save(verify);
+
+        this.mailService.sendVerificationEmail(
+          user.email,
+          updatedVerification.code
+        );
       }
       if (password) {
         user.password = password;
