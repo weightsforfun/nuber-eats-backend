@@ -87,26 +87,26 @@ export class UserService {
     }
   }
 
-  async profile(
-    userProfileInput: UserProfileInput
-  ): Promise<UserProfileOutput> {
-    try {
-      const user = await this.findById(userProfileInput.userId);
-      console.log(user);
-      if (!user) {
-        throw Error();
-      }
-      return {
-        ok: true,
-        user: user.user,
-      };
-    } catch (error) {
-      return {
-        ok: false,
-        error: "User Not found",
-      };
-    }
-  }
+  // async profile(
+  //   userProfileInput: UserProfileInput
+  // ): Promise<UserProfileOutput> {
+  //   try {
+  //     const user = await this.findById(userProfileInput.userId);
+  //     console.log(user);
+  //     if (!user) {
+  //       throw Error();
+  //     }
+  //     return {
+  //       ok: true,
+  //       user: user.user,
+  //     };
+  //   } catch (error) {
+  //     return {
+  //       ok: false,
+  //       error: "User Not found",
+  //     };
+  //   }
+  // }
 
   async editProfile(
     userId: number,
@@ -119,7 +119,7 @@ export class UserService {
         user.verified = false;
 
         const verify = await this.verifications.findOne({ where: { userId } });
-        verify.code = verify.changeCode();
+        // verify.code = verify.changeCode(); -test할때 오류난다 어떻게 해결해야할까.
 
         const updatedVerification = await this.verifications.save(verify);
 
@@ -138,7 +138,7 @@ export class UserService {
     } catch (error) {
       return {
         ok: false,
-        error,
+        error: "Could not update profile.",
       };
     }
   }
@@ -149,7 +149,7 @@ export class UserService {
         where: { code },
         relations: ["user"],
       });
-      console.log(verification.user);
+      // console.log(verification.user);
       if (verification) {
         verification.user.verified = true;
         await this.users.save(verification.user);
@@ -158,11 +158,11 @@ export class UserService {
           ok: true,
         };
       }
-      throw new Error();
+      return { ok: false, error: "Verification not found." };
     } catch (error) {
       return {
         ok: false,
-        error,
+        error: "Could not verify email.",
       };
     }
   }
