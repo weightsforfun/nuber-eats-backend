@@ -37,7 +37,7 @@ export class UserResolver {
   async profile(
     @Args() userProfileInput: UserProfileInput
   ): Promise<UserProfileOutput> {
-    return this.UserService.profile(userProfileInput);
+    return this.UserService.findById(userProfileInput);
   }
 
   @Mutation((returns) => EditProfileOutPut)

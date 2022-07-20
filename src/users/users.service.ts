@@ -72,8 +72,11 @@ export class UserService {
     }
   }
 
-  async findById(id: number): Promise<UserProfileOutput> {
+  async findById(
+    userProfileInput: UserProfileInput
+  ): Promise<UserProfileOutput> {
     try {
+      const id = userProfileInput.userId;
       const user = await this.users.findOneOrFail({ where: { id } });
       return {
         ok: true,
@@ -91,11 +94,8 @@ export class UserService {
   //   userProfileInput: UserProfileInput
   // ): Promise<UserProfileOutput> {
   //   try {
-  //     const user = await this.findById(userProfileInput.userId);
-  //     console.log(user);
-  //     if (!user) {
-  //       throw Error();
-  //     }
+  //       const user = await this.findOneOrFail({where:{userProfileInput.userId}});
+
   //     return {
   //       ok: true,
   //       user: user.user,
