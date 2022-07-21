@@ -119,7 +119,7 @@ export class UserService {
         user.verified = false;
 
         const verify = await this.verifications.findOne({ where: { userId } });
-        // verify.code = verify.changeCode(); -test할때 오류난다 어떻게 해결해야할까.
+        verify.code = verify.changeCode(); //-test할때 오류난다 어떻게 해결해야할까.
 
         const updatedVerification = await this.verifications.save(verify);
 
