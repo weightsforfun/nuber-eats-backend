@@ -77,7 +77,8 @@ export class UserService {
   ): Promise<UserProfileOutput> {
     try {
       const id = userProfileInput.userId;
-      const user = await this.users.findOneOrFail({ where: { id } });
+      const user = await this.users.findOneByOrFail({ id });
+
       return {
         ok: true,
         user,
