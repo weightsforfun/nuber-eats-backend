@@ -5,15 +5,24 @@ import { Core } from "src/common/entites/core.entity";
 import { Column, Entity, ManyToOne, RelationId } from "typeorm";
 import { Restaurant } from "./restaurant.entity";
 
+@InputType("DishChoiceInputType", { isAbstract: true })
+@ObjectType()
+class DishChoice {
+  @Field((type) => String)
+  name: string;
+  @Field((type) => Int, { nullable: true })
+  extra?: number;
+}
+
 @InputType("DishOptionInputType", { isAbstract: true })
 @ObjectType()
 class DishOption {
   @Field((type) => String)
   name: string;
-  @Field((type) => [String], { nullable: true })
-  choices?: string[];
-  @Field((type) => Int)
-  extra: number;
+  @Field((type) => [DishChoice], { nullable: true })
+  choices?: DishChoice[];
+  @Field((type) => Int, { nullable: true })
+  extra?: number;
 }
 
 @InputType("DishInputType", { isAbstract: true })
@@ -31,10 +40,10 @@ export class Dish extends Core {
   @IsNumber()
   price: number;
 
-  @Field((type) => String)
-  @Column()
+  @Field((type) => String, { nullable: true })
+  @Column({ nullable: true })
   @IsString()
-  photo: string;
+  photo?: string;
 
   @Field((type) => String)
   @Column()
@@ -44,6 +53,7 @@ export class Dish extends Core {
   @Field((type) => Restaurant)
   @ManyToOne((type) => Restaurant, (restaurant) => restaurant.menu, {
     onDelete: "CASCADE",
+    nullable: true,
   })
   restaurant: Restaurant;
 

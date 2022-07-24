@@ -8,6 +8,11 @@ import {
   CreateDishInput,
   CreateDishOutput,
 } from "src/users/dtos/create-dish.dto";
+import {
+  DeleteDishInput,
+  DeleteDishOutput,
+} from "src/users/dtos/delete-dish.dto";
+import { EditDishInput, EditDishOutput } from "src/users/dtos/edit-dish.dto";
 import { User } from "src/users/entities/user.entity";
 import { ILike, Like, Repository } from "typeorm";
 import {
@@ -23,6 +28,7 @@ import {
 } from "./dtos/search-restaurant.dto";
 import { AllCategoriesOutput } from "./entities/all-categories.dto";
 import { Category } from "./entities/category.entity";
+import { Dish } from "./entities/dish.entity";
 
 import { Restaurant } from "./entities/restaurant.entity";
 
@@ -33,7 +39,10 @@ export class RestaurantService {
     private restaurants: Repository<Restaurant>,
 
     @InjectRepository(Category)
-    private categories: Repository<Category>
+    private categories: Repository<Category>,
+
+    @InjectRepository(Dish)
+    private dishes: Repository<Dish>
   ) {}
 
   async createRestaurant(
@@ -213,8 +222,106 @@ export class RestaurantService {
     owner: User,
     createDishInput: CreateDishInput
   ): Promise<CreateDishOutput> {
-    return {
-      ok: false,
-    };
+    try {
+      const restaurant = await this.restaurants.findOne({
+        where: { id: createDishInput.restaurantId },
+      });
+      if (!restaurant) {
+        return {
+          ok: false,
+          error: "Restaurant not found",
+        };
+      }
+      if (owner.id !== restaurant.ownerId) {
+        return {
+          ok: false,
+          error: "You can't do that.",
+        };
+      }
+      await this.dishes.save(
+        this.dishes.create({ ...createDishInput, restaurant })
+      );
+      return {
+        ok: true,
+      };
+    } catch (error) {
+      console.log(error);
+      return {
+        ok: false,
+        error: "Could not create dish",
+      };
+    }
+  }
+  async editDish(
+    owner: User,
+    editDishInput: EditDishInput
+  ): Promise<EditDishOutput> {
+    try {
+      const dish = await this.dishes.findOne({
+        where: { id: editDishInput.dishId },
+        relations: ["restaurant"],
+      });
+      console.log(dish);
+      if (!dish) {
+        return {
+          ok: false,
+          error: "Dish not found",
+        };
+      }
+      if (dish.restaurant.ownerId !== owner.id) {
+        return {
+          ok: false,
+          error: "You can't do that.",
+        };
+      }
+      await this.dishes.save([
+        {
+          id: editDishInput.dishId,
+          ...editDishInput,
+        },
+      ]);
+
+      return {
+        ok: true,
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        error,
+      };
+    }
+  }
+
+  async deleteDish(
+    owner: User,
+    { dishId }: DeleteDishInput
+  ): Promise<DeleteDishOutput> {
+    try {
+      const dish = await this.dishes.findOne({
+        where: { id: dishId },
+        relations: ["restaurant"],
+      });
+      if (!dish) {
+        return {
+          ok: false,
+          error: "Dish not found",
+        };
+      }
+      if (dish.restaurant.ownerId !== owner.id) {
+        return {
+          ok: false,
+          error: "You can't do that.",
+        };
+      }
+      await this.dishes.delete(dishId);
+      return {
+        ok: true,
+      };
+    } catch {
+      return {
+        ok: false,
+        error: "Could not delete dish",
+      };
+    }
   }
 }
