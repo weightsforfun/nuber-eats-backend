@@ -58,9 +58,9 @@ export class Order extends Core {
   @JoinTable()
   dishes: Dish[];
 
-  @Column()
-  @Field((type) => Float)
-  total: number;
+  @Column({ nullable: true })
+  @Field((type) => Float, { nullable: true })
+  total?: number;
 
   @Column({ type: "enum", enum: OrderStatus })
   @Field((type) => OrderStatus)
