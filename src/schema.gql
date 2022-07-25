@@ -349,3 +349,7 @@ input EditOrderInput {
   id: Float!
   status: OrderStatus!
 }
+
+type Subscription {
+  hotPotatos: String!
+}

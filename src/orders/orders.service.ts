@@ -1,5 +1,7 @@
-import { Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import { PubSub } from "graphql-subscriptions";
+import { NEW_PENDING_ORDER, PUB_SUB } from "src/common/common.constants";
 import { Dish } from "src/restaurant/entities/dish.entity";
 import { Restaurant } from "src/restaurant/entities/restaurant.entity";
 import { User, UserRole } from "src/users/entities/user.entity";
@@ -24,7 +26,8 @@ export class OrderService {
     private readonly restaurants: Repository<Restaurant>,
 
     @InjectRepository(Dish)
-    private readonly dishes: Repository<Dish>
+    private readonly dishes: Repository<Dish>,
+    @Inject(PUB_SUB) private readonly pubSub: PubSub
   ) {}
 
   async crateOrder(
@@ -32,6 +35,7 @@ export class OrderService {
     { restaurantId, items }: CreateOrderInput
   ): Promise<CreateOrderOutput> {
     try {
+      console.log("try create");
       const restaurant = await this.restaurants.findOne({
         where: { id: restaurantId },
       });
@@ -80,7 +84,7 @@ export class OrderService {
         );
         orderItems.push(orderItem);
       }
-      await this.orders.save(
+      const order = await this.orders.save(
         this.orders.create({
           customer,
           restaurant,
@@ -88,6 +92,8 @@ export class OrderService {
           items: orderItems,
         })
       );
+      await this.pubSub.publish(NEW_PENDING_ORDER, { pendingOrders: order });
+
       return {
         ok: true,
       };
