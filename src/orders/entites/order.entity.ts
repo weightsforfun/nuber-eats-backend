@@ -6,7 +6,6 @@ import {
   registerEnumType,
 } from "@nestjs/graphql";
 import { IsEnum, IsNumber } from "class-validator";
-import { type } from "os";
 import { Core } from "src/common/entites/core.entity";
 
 import { Restaurant } from "src/restaurant/entities/restaurant.entity";

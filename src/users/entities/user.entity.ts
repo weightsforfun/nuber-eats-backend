@@ -6,12 +6,20 @@ import {
 } from "@nestjs/graphql";
 
 import { Core } from "src/common/entites/core.entity";
-import { BeforeInsert, BeforeUpdate, Column, Entity, OneToMany } from "typeorm";
+import {
+  BeforeInsert,
+  BeforeUpdate,
+  Column,
+  Entity,
+  JoinColumn,
+  OneToMany,
+} from "typeorm";
 import * as bcrypt from "bcrypt";
 import { InternalServerErrorException } from "@nestjs/common";
 import { IsBoolean, IsEmail, IsEnum, IsString } from "class-validator";
 import { Restaurant } from "src/restaurant/entities/restaurant.entity";
 import { Order } from "src/orders/entites/order.entity";
+import { Payment } from "src/payments/entities/payment.entity";
 
 export enum UserRole {
   Client = "Client",
@@ -54,6 +62,10 @@ export class User extends Core {
   @Field((type) => [Order])
   @OneToMany((type) => Order, (order) => order.driver)
   rides: Order[];
+
+  @Field((type) => [Payment])
+  @OneToMany((type) => Payment, (payment) => payment.user)
+  payments: Payment[];
 
   @BeforeInsert()
   @BeforeUpdate()

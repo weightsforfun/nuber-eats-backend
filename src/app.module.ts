@@ -24,6 +24,8 @@ import { Dish } from "./restaurant/entities/dish.entity";
 import { OrdersModule } from "./orders/orders.module";
 import { Order } from "./orders/entites/order.entity";
 import { OrderItem } from "./orders/entites/order-item.entity";
+import { PaymentsModule } from "./payments/payments.module";
+import { Payment } from "./payments/entities/payment.entity";
 
 @Module({
   imports: [
@@ -88,12 +90,14 @@ import { OrderItem } from "./orders/entites/order-item.entity";
         Dish,
         Order,
         OrderItem,
+        Payment,
       ],
     }),
     AuthModule,
     UsersModule,
     CommonModule,
     RestaurantModule,
+    PaymentsModule,
     JwtModule.forRoot({
       privateKey: process.env.SECRET_KEY,
     }),
@@ -104,6 +108,7 @@ import { OrderItem } from "./orders/entites/order-item.entity";
       fromEmail: process.env.MAILGUN_FROM_EMAIL,
     }),
     OrdersModule,
+    PaymentsModule,
   ],
   controllers: [],
   providers: [],
