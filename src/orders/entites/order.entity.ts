@@ -53,6 +53,7 @@ export class Order extends Core {
   @ManyToOne((type) => User, (user) => user.rides, {
     onDelete: "SET NULL",
     nullable: true,
+    eager: true,
   })
   @JoinColumn({ name: "driverId" })
   driver?: User;
@@ -63,11 +64,14 @@ export class Order extends Core {
   @ManyToOne((type) => Restaurant, (restaurant) => restaurant.orders, {
     onDelete: "SET NULL",
     nullable: true,
+    eager: true,
   })
   restaurant?: Restaurant;
 
   @Field((type) => [OrderItem])
-  @ManyToMany((type) => OrderItem)
+  @ManyToMany((type) => OrderItem, {
+    eager: true,
+  })
   @JoinTable()
   items: OrderItem[];
 

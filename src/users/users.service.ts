@@ -76,9 +76,11 @@ export class UserService {
     userProfileInput: UserProfileInput
   ): Promise<UserProfileOutput> {
     try {
-      const id = userProfileInput.userId;
-      const user = await this.users.findOneByOrFail({ id });
-
+      console.log(userProfileInput.userId);
+      const user = await this.users.findOne({
+        where: { id: userProfileInput.userId },
+      });
+      console.log("service", user);
       return {
         ok: true,
         user,
