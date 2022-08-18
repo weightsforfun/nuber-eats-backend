@@ -26,6 +26,7 @@ import { Order } from "./orders/entites/order.entity";
 import { OrderItem } from "./orders/entites/order-item.entity";
 import { PaymentsModule } from "./payments/payments.module";
 import { Payment } from "./payments/entities/payment.entity";
+import { UploadsModule } from './uploads/uploads.module';
 
 @Module({
   imports: [
@@ -109,6 +110,7 @@ import { Payment } from "./payments/entities/payment.entity";
     }),
     OrdersModule,
     PaymentsModule,
+    UploadsModule,
   ],
   controllers: [],
   providers: [],
