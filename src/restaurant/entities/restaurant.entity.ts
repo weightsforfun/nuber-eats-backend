@@ -44,9 +44,12 @@ export class Restaurant extends Core {
   @Field((type) => Category, { nullable: true })
   category: Category;
 
-  @Field((type) => [Dish])
-  @OneToMany((type) => Dish, (dish) => dish.restaurant)
-  menu: Dish[];
+  @Field((type) => [Dish], { nullable: true })
+  @OneToMany((type) => Dish, (dish) => dish.restaurant, {
+    eager: true,
+    onDelete: "CASCADE",
+  })
+  menu?: Dish[];
 
   @Field((type) => [Order])
   @OneToMany((type) => Order, (order) => order.restaurant)
