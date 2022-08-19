@@ -63,7 +63,6 @@ export class Order extends Core {
   @ManyToOne((type) => Restaurant, (restaurant) => restaurant.orders, {
     onDelete: "SET NULL",
     nullable: true,
-    eager: true,
   })
   restaurant?: Restaurant;
 

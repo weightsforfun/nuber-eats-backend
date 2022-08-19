@@ -3,7 +3,14 @@ import { IsString, Length } from "class-validator";
 import { Core } from "src/common/entites/core.entity";
 import { Order } from "src/orders/entites/order.entity";
 import { User } from "src/users/entities/user.entity";
-import { Column, Entity, ManyToOne, OneToMany, RelationId } from "typeorm";
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToOne,
+  OneToMany,
+  RelationId,
+} from "typeorm";
 import { Category } from "./category.entity";
 import { Dish } from "./dish.entity";
 
@@ -52,7 +59,7 @@ export class Restaurant extends Core {
   menu?: Dish[];
 
   @Field((type) => [Order])
-  @OneToMany((type) => Order, (order) => order.restaurant)
+  @OneToMany((type) => Order, (order) => order.restaurant, { eager: true })
   orders: Order[];
 
   @Field((type) => Boolean)

@@ -414,6 +414,7 @@ export class RestaurantService {
           id,
         },
       });
+      console.log(restaurant);
       return {
         restaurant,
         ok: true,
